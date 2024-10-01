@@ -12,6 +12,8 @@ if (result.error) {
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 /*
+Set commands to bot menu 
+
 filter_chat_one_hour - Отфильтровать сообщения за последний  час 
 filter_chat_three_hours - Отфильтровать сообщения за последниx 3 часa
 filter_chat_six_hours - Отфильтровать сообщения за последниx 6 часов
