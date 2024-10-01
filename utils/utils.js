@@ -1,0 +1,72 @@
+function getformatDateTime(unixTimestamp) {
+    const date = new Date(unixTimestamp * 1000);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0, поэтому добавляем 1
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function getformatTime(unixTimestamp) {
+    const date = new Date(unixTimestamp * 1000);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    // const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${hours}:${minutes}`;
+}
+
+
+function filter_messages(messages) {
+    const true_key_words = [
+        '🥒', '🍆', '🥦', '✅', '🟢', '⛔️', '☀️', '😡', '🌼', '🫒', '🟥',
+        '🌞', '🛑', '👌', '❌', '🪀', '🌳', '👹', '💚', '🤬', '🧶', '🌵', '🚓',
+    ];
+
+    const true_words = [
+        'грязно', 'грязь', 'крепят', 'чисто', 'чистота', 'чист', 'чизт', 'тихо', 'норм', 'ок', 'ok',
+        'оливок', 'оливки', 'зеленых', 'зелень', 'синие', 'синих', 'ухилянт', 'пикселя',
+        'проверяют', 'пресуют', 'пресують', 'проверка', 'пешие', 'внимание', 'патруль', 'тцк'
+    ];
+
+    // Проверка на положительные слова
+    const true_regex = new RegExp(`(^|[\\s])(${true_words.join('|')})([\\s\\!\\.\\,]+|$)`, 'i');
+
+    // Негативные слова
+    const false_key_words = ['?'];
+    const false_words = ['бля', 'чево', 'чего', 'шотак', 'вайб'];
+    const false_regex = new RegExp(`(^|[^\\w])(${false_words.join('|')})([^\\w]|$)`, 'i');
+
+    messages = messages.filter((message) => {
+        const msg = message?.message;
+
+        // Проверяем на наличие нежелательного знака "?"
+        const hasFalseKeyWord = false_key_words.some(word => msg.includes(word));
+
+        // Проверка наличия положительных слов
+        const passesTrueCheck = (true_key_words.some(word => msg.includes(word)) || true_regex.test(msg));
+        // Проверка на наличие нежелательных слов
+        const passesFalseCheck = hasFalseKeyWord || false_regex.test(msg);
+
+        // Если нет положительных слов и не присутствуют нежелательные слова, отклоняем сообщение
+        const isValidMessage = msg?.length < 100 && (passesTrueCheck && !passesFalseCheck);
+
+        // Отладочная информация
+        console.log(`Message: "${msg}"`);
+        console.log(`Passes True Check: ${passesTrueCheck}`);
+        console.log(`Passes False Check: ${passesFalseCheck}`);
+        console.log(`Is Valid Message: ${isValidMessage}`);
+
+        return isValidMessage;
+    });
+
+    return messages;
+}
+
+
+module.exports = { getformatDateTime, getformatTime, filter_messages };
