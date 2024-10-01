@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const dotenv = require("dotenv");
-const { getMessagesForPeriod } = require('./tclient');
+const { getMessagesForPeriod } = require('./tgClient/tclient');
 const { getformatTime, filter_messages } = require('./utils/utils');
 
 const result = dotenv.config();
