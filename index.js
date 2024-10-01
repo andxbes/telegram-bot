@@ -127,23 +127,38 @@ bot.on('message', async (msg) => {
 });
 
 
-function sendAnswer(chatId, filteredMessages, allMessages, start_time) {
-    let text = [];
+async function sendAnswer(chatId, filteredMessages, allMessages, start_time) {
+
+    let parts = [[]];
+    let part = 0;
+    let current_part_length = 0;
+
     filteredMessages.forEach(msg => {
         // console.log(msg.message, getformatTime(msg.date));
-
+        let text = '';
         const replyMsgId = msg.replyTo?.replyToMsgId;
         if (replyMsgId) {
             const replyMsg = allMessages.find(obj => obj.id === replyMsgId);
             if (replyMsg) {
-                text.push(`"${replyMsg.message}"`);
+                parts[part].push(`"${replyMsg.message}"`);
+                current_part_length += replyMsg.message.length;
             }
         }
-        text.push(`${msg.message} - ${getformatTime(msg.date)}\r\n`);
+        parts[part].push(`${msg.message} - ${getformatTime(msg.date)}\r\n`);
+        current_part_length += msg.message.length;
+
+        if (current_part_length > 3000) {
+            part++;
+            parts[part] = [];
+            current_part_length = 0;
+        }
     });
     if (start_time) {
         const end = new Date().getTime();
-        text.push(`\r\nFound ${allMessages.length} messages , clear ${filteredMessages.length} messages ,  it took  ${end - start_time}ms`);
+        parts[part].push(`\r\nFound ${allMessages.length} messages , clear ${filteredMessages.length} messages ,  it took  ${end - start_time}ms`);
     }
-    bot.sendMessage(chatId, text.join('\r\n'));
+
+    for (const text of parts) {
+        await bot.sendMessage(chatId, text.join('\r\n'));
+    }
 }
