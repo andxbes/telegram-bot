@@ -45,7 +45,7 @@ bot.onText(/\/filter_chat_one_hour/, async (msg) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const fromTime = currentTime - 3600;
 
-    getMessagesForPeriod(-1001746152256, fromTime).then((allMessages) => {
+    getMessagesForPeriod(fromTime).then((allMessages) => {
         const filteredMessages = filter_messages(allMessages);
         sendAnswer(chatId, filteredMessages, allMessages, start);
     });
@@ -59,7 +59,7 @@ bot.onText(/\/filter_chat_three_hours/, async (msg) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const fromTime = currentTime - 3 * 3600;
 
-    getMessagesForPeriod(-1001746152256, fromTime).then((allMessages) => {
+    getMessagesForPeriod(fromTime).then((allMessages) => {
         const filteredMessages = filter_messages(allMessages);
         sendAnswer(chatId, filteredMessages, allMessages, start);
     });
@@ -73,7 +73,7 @@ bot.onText(/\/filter_chat_six_hours/, async (msg) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const fromTime = currentTime - 6 * 3600;
 
-    getMessagesForPeriod(-1001746152256, fromTime).then((allMessages) => {
+    getMessagesForPeriod(fromTime).then((allMessages) => {
         const filteredMessages = filter_messages(allMessages);
         sendAnswer(chatId, filteredMessages, allMessages, start);
     });
@@ -86,7 +86,7 @@ bot.onText(/\/filter_chat_12_hours/, async (msg) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const fromTime = currentTime - 12 * 3600;
 
-    getMessagesForPeriod(-1001746152256, fromTime).then((allMessages) => {
+    getMessagesForPeriod(fromTime).then((allMessages) => {
         const filteredMessages = filter_messages(allMessages);
         sendAnswer(chatId, filteredMessages, allMessages, start);
     });
@@ -99,7 +99,7 @@ bot.onText(/\/filter_chat_24_hours/, async (msg) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const fromTime = currentTime - 24 * 3600;
 
-    getMessagesForPeriod(-1001746152256, fromTime).then((allMessages) => {
+    getMessagesForPeriod(fromTime).then((allMessages) => {
         const filteredMessages = filter_messages(allMessages);
         sendAnswer(chatId, filteredMessages, allMessages, start);
     });

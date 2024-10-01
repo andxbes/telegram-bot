@@ -62,7 +62,9 @@ async function getAvailableChanel() {
 
 let cache = new Map([]);
 
-async function getMessagesForPeriod(chatId, fromTime) {
+const chatId = -1001746152256;
+
+async function getMessagesForPeriod(fromTime) {
     await client.connect();
     const limit = 50;
     const chat = await client.getEntity(chatId);
