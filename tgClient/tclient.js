@@ -2,9 +2,9 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const readline = require("readline");
 const dotenv = require("dotenv");
-const result = dotenv.config();
-if (result.error) {
-    throw result.error;
+const dotenvConf = dotenv.config();
+if (dotenvConf.error) {
+    throw dotenvConf.error;
 }
 
 const stringSession = new StringSession(process.env.API_T_SESSION); // fill this later with the value from session.save()
@@ -60,12 +60,14 @@ async function getAvailableChanel() {
 }
 
 
+let cache = new Map([]);
+
 async function getMessagesForPeriod(chatId, fromTime) {
     await client.connect();
-    const limit = 100;
+    const limit = 50;
     const chat = await client.getEntity(chatId);
 
-    let allMessages = [];
+    // let filteredMessages = [];
     let offsetId = 0;
 
     while (true) {
@@ -75,18 +77,27 @@ async function getMessagesForPeriod(chatId, fromTime) {
         });
 
         if (messages.length === 0) break;
-
-        messages = messages.filter((message) => message.date >= fromTime);
-        allMessages = allMessages.concat(messages);
-
-        if (messages.length < limit) {
-            break;
+        let isEnd = false;
+        for (const message of messages) {
+            if (!cache.has(message.id)) {
+                cache.set(message.id, message);
+            } else {
+                isEnd = true;
+                break;
+            }
         }
 
+        if (isEnd) break;
         // Обновляем offsetId для следующей выборки
         offsetId = messages[messages.length - 1].id;
     }
-    return allMessages.reverse();
+
+
+    const result = Array.from(cache.values());
+
+    // console.info(result);
+
+    return result.reverse().filter((message) => message.date >= fromTime);
 }
 
 module.exports = { client, getAvailableChanel, getMessagesForPeriod };

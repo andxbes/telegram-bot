@@ -3,9 +3,9 @@ const dotenv = require("dotenv");
 const { getMessagesForPeriod } = require('./tgClient/tclient');
 const { getformatTime, filter_messages } = require('./utils/utils');
 
-const result = dotenv.config();
-if (result.error) {
-    throw result.error;
+const dotenvConf = dotenv.config();
+if (dotenvConf.error) {
+    throw dotenvConf.error;
 }
 
 // Create a bot that uses 'polling' to fetch new updates

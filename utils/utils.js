@@ -57,10 +57,10 @@ function filter_messages(messages) {
         const isValidMessage = msg?.length < 100 && (passesTrueCheck && !passesFalseCheck);
 
         // Отладочная информация
-        console.log(`Message: "${msg}"`);
-        console.log(`Passes True Check: ${passesTrueCheck}`);
-        console.log(`Passes False Check: ${passesFalseCheck}`);
-        console.log(`Is Valid Message: ${isValidMessage}`);
+        // console.log(`Message: "${msg}"`);
+        // console.log(`Passes True Check: ${passesTrueCheck}`);
+        // console.log(`Passes False Check: ${passesFalseCheck}`);
+        // console.log(`Is Valid Message: ${isValidMessage}`);
 
         return isValidMessage;
     });
