@@ -147,7 +147,7 @@ async function sendAnswer(chatId, filteredMessages, allMessages, start_time) {
         parts[part].push(`${msg.message} - ${getformatTime(msg.date)}\r\n`);
         current_part_length += msg.message.length;
 
-        if (current_part_length > 3000) {
+        if (current_part_length > 3000) {//max 4096 
             part++;
             parts[part] = [];
             current_part_length = 0;
