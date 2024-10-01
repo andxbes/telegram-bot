@@ -70,32 +70,26 @@ async function getMessagesForPeriod(chatId, fromTime) {
     // let filteredMessages = [];
     let offsetId = 0;
 
-    while (true) {
+    generalLoop: while (true) {
         let messages = await client.getMessages(chat, {
             limit: limit,
             offsetId: offsetId,
         });
 
         if (messages.length === 0) break;
-        let isEnd = false;
+
         for (const message of messages) {
             if (!cache.has(message.id)) {
                 cache.set(message.id, message);
             } else {
-                isEnd = true;
-                break;
+                break generalLoop;
             }
         }
-
-        if (isEnd) break;
         // Обновляем offsetId для следующей выборки
         offsetId = messages[messages.length - 1].id;
     }
 
-
     const result = Array.from(cache.values());
-
-    // console.info(result);
 
     return result.reverse().filter((message) => message.date >= fromTime);
 }
