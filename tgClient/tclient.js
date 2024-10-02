@@ -93,7 +93,6 @@ async function getMessagesForPeriod(fromTime) {
                 }
             }
         }
-        // Обновляем offsetId для следующей выборки
         offsetId = messages[messages.length - 1].id;
     }
 
