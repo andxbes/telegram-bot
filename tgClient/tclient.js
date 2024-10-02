@@ -60,9 +60,22 @@ async function getAvailableChanel() {
 }
 
 
-let cache = [];
-
 const chatId = -1001746152256;
+
+
+let cache = [];
+function removeOldMessages() {
+    if (cache.length > 0) {
+        const old_length = cache.length;
+        const yesterday = parseInt((Date.now() / 1000) - (24 * 60 * 60));
+        cache = cache.filter(message => {
+            return message.date >= yesterday;
+        });
+        console.log('Updated cache , removed :', old_length - cache.length);
+    }
+}
+setInterval(removeOldMessages, 60 * 60 * 1000);
+
 
 async function getMessagesForPeriod(fromTime) {
     await client.connect();
