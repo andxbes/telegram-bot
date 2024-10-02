@@ -60,7 +60,7 @@ async function getAvailableChanel() {
 }
 
 
-let cache = new Map([]);
+let cache = [];
 
 const chatId = -1001746152256;
 
@@ -69,8 +69,10 @@ async function getMessagesForPeriod(fromTime) {
     const limit = 50;
     const chat = await client.getEntity(chatId);
 
-    // let filteredMessages = [];
+
     let offsetId = 0;
+
+    let buffer = [];
 
     generalLoop: while (true) {
         let messages = await client.getMessages(chat, {
@@ -79,21 +81,24 @@ async function getMessagesForPeriod(fromTime) {
         });
 
         if (messages.length === 0) break;
+        if (cache.length == 0) {
+            buffer.push(...messages);
+        } else {
+            for (const message of messages) {
 
-        for (const message of messages) {
-            if (!cache.has(message.id)) {
-                cache.set(message.id, message);
-            } else {
-                break generalLoop;
+                if (message.id !== cache[cache.length - 1].id) {
+                    buffer.push(message);
+                } else {
+                    break generalLoop;
+                }
             }
         }
         // Обновляем offsetId для следующей выборки
         offsetId = messages[messages.length - 1].id;
     }
 
-    const result = Array.from(cache.values());
-
-    return result.reverse().filter((message) => message.date >= fromTime);
+    cache.push(...(buffer.reverse()));
+    return cache.filter((message) => message.date >= fromTime);
 }
 
 module.exports = { client, getAvailableChanel, getMessagesForPeriod };
