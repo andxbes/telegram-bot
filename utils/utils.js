@@ -39,7 +39,7 @@ function filter_messages(messages) {
 
     // Негативные слова
     const false_key_words = ['?'];
-    const false_words = ['бля', 'чево', 'чего', 'шотак', 'вайб', 'почему', 'долбоеб', 'далбаеб', 'хуй'];
+    const false_words = ['бля', 'желательно', 'в ахуе', 'чево', 'чего', 'шотак', 'вайб', 'почему', 'долбоеб', 'далбаеб', 'хуй'];
     const false_regex = new RegExp(`(^|[\\s])(${false_words.join('|')})([\\s\\?\\.\\,\\!]|$)`, 'i');
 
     messages = messages.filter((message) => {
