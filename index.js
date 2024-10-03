@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const dotenv = require("dotenv");
 const { getMessagesForPeriod } = require('./tgClient/tclient');
-const { getformatTime, filter_messages } = require('./utils/utils');
+const { getformatTime, filter_messages, getformatDateTime } = require('./utils/utils');
 
 const dotenvConf = dotenv.config();
 if (dotenvConf.error) {
@@ -125,7 +125,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 // messages.
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    console.info(msg.from.id, msg.from.first_name, msg.from.last_name);
+    console.info(getformatDateTime(new Date().getTime() / 1000), msg.from.id, msg.from.first_name, msg.from.last_name);
 });
 
 
