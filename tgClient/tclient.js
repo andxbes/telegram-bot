@@ -78,7 +78,7 @@ setInterval(removeOldMessages, 60 * 60 * 1000);
 
 
 async function getMessagesForPeriod(fromTime) {
-    await client.connect();
+    // await client.connect();
     const limit = 50;
     const chat = await client.getEntity(chatId);
 
