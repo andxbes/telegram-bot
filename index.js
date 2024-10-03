@@ -123,10 +123,10 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 
 // Listen for any kind of message. There are different kinds of
 // messages.
-// bot.on('message', async (msg) => {
-//     const chatId = msg.chat.id;
-//     console.info(msg.from.id, msg.from.first_name, msg.from.last_name);
-// });
+bot.on('message', async (msg) => {
+    const chatId = msg.chat.id;
+    console.info(msg.from.id, msg.from.first_name, msg.from.last_name);
+});
 
 
 async function sendAnswer(chatId, filteredMessages, allMessages, start_time) {
