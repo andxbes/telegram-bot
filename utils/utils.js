@@ -67,7 +67,7 @@ function filter_messages(messages) {
         const passesFalseCheck = hasFalseKeyWord || false_regex.test(msg);
 
         // Если нет положительных слов и не присутствуют нежелательные слова, отклоняем сообщение
-        const isValidMessage = msg?.length < 100 && (passesTrueCheck && !passesFalseCheck);
+        const isValidMessage = msg?.length < 120 && (passesTrueCheck && !passesFalseCheck);
 
         // Отладочная информация
         // console.log(`Message: "${msg}"`);
