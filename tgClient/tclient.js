@@ -86,7 +86,7 @@ async function getMessagesForPeriod(fromTime) {
     const yamiTuchi = await getMessagesFromChatCached(-1001886888533);
 
     const mergedArray = [...chatNezlamnosti, ...yamiTuchi];
-    mergedArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+    mergedArray.sort((a, b) => a.date - b.date);
 
     return mergedArray.filter((message) => message.date >= fromTime);
 }
@@ -106,7 +106,7 @@ async function getMessagesFromChatCached(chatId) {
     const buffer = await getMessagesFromChat(chatId, lastCachedMessage);
     if (buffer.length > 0) {
         chatArray.push(...buffer);
-        chatArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+        chatArray.sort((a, b) => a.date - b.date);
     }
 
     return chatArray;
