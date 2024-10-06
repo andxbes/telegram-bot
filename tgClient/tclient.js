@@ -7,6 +7,8 @@ if (dotenvConf.error) {
     throw dotenvConf.error;
 }
 
+const yesterday = parseInt((Date.now() / 1000) - (24 * 60 * 60));
+
 const stringSession = new StringSession(process.env.API_T_SESSION); // fill this later with the value from session.save()
 
 const rl = readline.createInterface({
@@ -56,50 +58,81 @@ async function getAvailableChanel() {
     channels.forEach((channel) => {
         console.log(`Name: ${channel.title}, ID: ${channel.id}`);
     });
-    return result;
 }
 
 
 const chatId = -1001746152256;
 
 
-let cache = [];
+let cache = new Map();
 function removeOldMessages() {
-    if (cache.length > 0) {
-        const old_length = cache.length;
-        const yesterday = parseInt((Date.now() / 1000) - (24 * 60 * 60));
-        cache = cache.filter(message => {
+
+    cache.forEach((chat, index) => {
+        const old_length = chat.length;
+        chat = chat.filter(message => {
             return message.date >= yesterday;
         });
-        console.log('Updated cache , removed :', old_length - cache.length);
-    }
+        console.log(`Updated cache ${index} , removed : ${old_length - chat.length}`);
+        return chat;
+    })
+
+
 }
 setInterval(removeOldMessages, 60 * 60 * 1000);
 
 
 async function getMessagesForPeriod(fromTime) {
-    // await client.connect();
-    const limit = 100;
+    const chatNezlamnosti = await getMessagesFromChatCached(-1001746152256);
+    const yamiTuchi = await getMessagesFromChatCached(-1001886888533);
+
+    const mergedArray = [...chatNezlamnosti, ...yamiTuchi];
+    mergedArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    return mergedArray.filter((message) => message.date >= fromTime);
+}
+
+
+async function getMessagesFromChatCached(chatId) {
+    let lastCachedMessage = null;
+    let chatArray = [];
+
+    if (cache.has(chatId)) {
+        chatArray = cache.get(chatId);
+        lastCachedMessage = chatArray.length > 0 ? chatArray[chatArray.length - 1] : null;
+    } else {
+        cache.set(chatId, chatArray);
+    }
+
+    const buffer = await getMessagesFromChat(chatId, lastCachedMessage);
+    if (buffer.length > 0) {
+        chatArray.push(...buffer);
+        chatArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    return chatArray;
+}
+
+async function getMessagesFromChat(chatId, lastMessage = null) {
     const chat = await client.getEntity(chatId);
-
-
+    const limit = 100;
     let offsetId = 0;
-
     let buffer = [];
-
     generalLoop: while (true) {
         let messages = await client.getMessages(chat, {
             limit: limit,
             offsetId: offsetId,
         });
 
-        if (messages.length === 0) break;
-        if (cache.length == 0) {
+        if (messages.length === 0
+            || (messages.length > 0 && messages[0].date < yesterday)) {
+            break;
+        }
+
+        if (lastMessage == null) {
             buffer.push(...messages);
         } else {
             for (const message of messages) {
-
-                if (message.id !== cache[cache.length - 1].id) {
+                if (message.id !== lastMessage.id) {
                     buffer.push(message);
                 } else {
                     break generalLoop;
@@ -108,9 +141,9 @@ async function getMessagesForPeriod(fromTime) {
         }
         offsetId = messages[messages.length - 1].id;
     }
-
-    cache.push(...(buffer.reverse()));
-    return cache.filter((message) => message.date >= fromTime);
+    return buffer.reverse();
 }
+
+
 
 module.exports = { client, getAvailableChanel, getMessagesForPeriod };
