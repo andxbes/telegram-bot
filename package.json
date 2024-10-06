@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "js-md5": "^0.8.3",
     "node-telegram-bot-api": "^0.66.0",
     "telegram": "^2.25.11"
   },

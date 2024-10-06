@@ -2,6 +2,7 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const readline = require("readline");
 const dotenv = require("dotenv");
+const { debounce } = require("../utils/utils");
 const dotenvConf = dotenv.config();
 if (dotenvConf.error) {
     throw dotenvConf.error;
@@ -82,8 +83,11 @@ setInterval(removeOldMessages, 60 * 60 * 1000);
 
 
 async function getMessagesForPeriod(fromTime) {
-    const chatNezlamnosti = await getMessagesFromChatCached(-1001746152256);
-    const yamiTuchi = await getMessagesFromChatCached(-1001886888533);
+    const chatNezlamnosti = await debouncedGetMessages(-1001746152256);
+    const yamiTuchi = await debouncedGetMessages(-1001886888533);
+
+    // const chatNezlamnosti = await getMessagesFromChatCached(-1001746152256);
+    // const yamiTuchi = await getMessagesFromChatCached(-1001886888533);
 
     const mergedArray = [...chatNezlamnosti, ...yamiTuchi];
     mergedArray.sort((a, b) => a.date - b.date);
@@ -91,6 +95,7 @@ async function getMessagesForPeriod(fromTime) {
     return mergedArray.filter((message) => message.date >= fromTime);
 }
 
+const debouncedGetMessages = debounce(getMessagesFromChatCached, 60000);
 
 async function getMessagesFromChatCached(chatId) {
     let lastCachedMessage = null;

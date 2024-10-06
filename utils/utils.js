@@ -1,3 +1,23 @@
+const md5 = require('js-md5');
+
+function debounce(fn, waitTime) {
+    let cache = new Map();
+
+    return async function (...args) {
+        const key = md5(args);
+        const now = Date.now();
+
+        if (cache.has(key) && (now - cache.get(key).time) < waitTime) {
+            return cache.get(key).result;
+        }
+
+        const result = await fn(...args);
+        cache.set(key, { result, time: now });
+
+        return result;
+    };
+}
+
 function getformatDateTime(unixTimestamp) {
     const date = new Date(unixTimestamp * 1000);
 
@@ -25,7 +45,7 @@ function getformatTime(unixTimestamp) {
 function filter_messages(messages) {
     const true_key_words = [
         '🥒', '🍆', '🥦', '✅', '🟢', '⛔️', '☀️', '😡', '🌼', '🫒', '🟥', '🚨', '🛑', '☀️',
-        '🌞', '👌', '❌', '🪀', '🌳', '👹', '💚', '🤬', '🧶', '🌵', '🚓', '🚧', '🐸'
+        '🌞', '👌', '❌', '🪀', '🌳', '👹', '💚', '🤬', '🧶', '🌵', '🚓', '🚧', '🐸', '👮‍♂'
     ];
 
     const true_words = [
@@ -51,7 +71,7 @@ function filter_messages(messages) {
     const false_words = [
         'бля', 'желательно', 'а какой', 'в ахуе', 'пох',
         'если', 'чево', 'чего', 'шотак', 'нахуй', 'блэт',
-        'вайб', 'почему', 'долбоеб', 'далбаеб', 'хуй',
+        'вайб', 'почему', 'долбоеб', 'далбаеб', 'хуй', 'пидар',
         'вобщем', 'мне', 'заебал', 'развлекайся', 'перерва', 'пиво', 'водка', 'водки'
     ];
     const false_regex = new RegExp(`(^|[\\s])(${false_words.join('|')})([\\s\\?\\.\\,\\!]|$)`, 'i');
@@ -72,9 +92,9 @@ function filter_messages(messages) {
 
         // Отладочная информация
         // console.log(`Message: "${msg}"`);
-        // console.log(`Passes True Check: ${passesTrueCheck}`);
-        // console.log(`Passes False Check: ${passesFalseCheck}`);
-        // console.log(`Is Valid Message: ${isValidMessage}`);
+        // console.log(`Passes True Check: ${ passesTrueCheck } `);
+        // console.log(`Passes False Check: ${ passesFalseCheck } `);
+        // console.log(`Is Valid Message: ${ isValidMessage } `);
 
         return isValidMessage;
     });
@@ -83,4 +103,4 @@ function filter_messages(messages) {
 }
 
 
-module.exports = { getformatDateTime, getformatTime, filter_messages };
+module.exports = { getformatDateTime, getformatTime, filter_messages, debounce };
