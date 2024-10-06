@@ -4,9 +4,9 @@ const { getMessagesForPeriod } = require('./tgClient/tclient');
 const { getformatTime, filter_messages, getformatDateTime } = require('./utils/utils');
 
 const dotenvConf = dotenv.config();
-if (dotenvConf.error) {
-    throw dotenvConf.error;
-}
+// if (dotenvConf.error) {
+//     throw dotenvConf.error;
+// }
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
