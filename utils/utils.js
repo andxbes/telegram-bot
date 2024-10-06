@@ -2,6 +2,8 @@ const md5 = require('js-md5');
 
 function debounce(fn, waitTime) {
     let cache = new Map();
+    let isUpdating = false;
+    let pendingCalls = [];
 
     return async function (...args) {
         const key = md5(args);
@@ -11,8 +13,24 @@ function debounce(fn, waitTime) {
             return cache.get(key).result;
         }
 
+        if (isUpdating) {
+            return new Promise((resolve) => {
+                pendingCalls.push({ args, resolve });
+            });
+        }
+
+        isUpdating = true;
+
         const result = await fn(...args);
         cache.set(key, { result, time: now });
+
+        for (const { args, resolve } of pendingCalls) {
+            const cachedResult = cache.get(md5(args));
+            resolve(cachedResult ? cachedResult.result : result);
+        }
+        pendingCalls = [];
+
+        isUpdating = false;
 
         return result;
     };
