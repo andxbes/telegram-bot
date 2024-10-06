@@ -39,7 +39,7 @@ client.start({
     onError: (err) => console.log(err),
 }).then(() => {
     console.log("You should now be connected.");
-    //console.log(client.session.save()); // Save this string to avoid logging in again to API_T_SESSION
+    console.log(client.session.save()); // Save this string to avoid logging in again to API_T_SESSION
 });
 
 // await client.sendMessage("me", { message: "Hello!" });
