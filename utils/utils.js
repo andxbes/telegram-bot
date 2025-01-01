@@ -103,7 +103,9 @@ function filter_messages(messages) {
 
     messages = messages.filter((message) => {
         const msg = message?.message;
-
+        if (!msg) {
+            return false;
+        }
         // Проверяем на наличие нежелательного знака "?"
         const hasFalseKeyWord = false_key_words.some(word => msg.includes(word));
 
